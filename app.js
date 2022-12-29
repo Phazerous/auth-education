@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { User } = require('./db');
+const md5 = require('md5');
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.get('/register', (req, res) => res.render('register'));
 app.post('/register', (req, res) => {
   const newUser = new User({
     email: req.body.username,
-    password: req.body.password,
+    password: md5(req.body.password),
   });
 
   newUser.save((err) => {
@@ -35,7 +36,7 @@ app.post('/register', (req, res) => {
 
 app.post('/login', (req, res) => {
   const username = req.body.username;
-  const password = req.body.password;
+  const password = md5(req.body.password);
 
   User.findOne({ email: username }, (err, foundUser) => {
     if (err) {
